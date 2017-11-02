@@ -26,6 +26,6 @@ scikit-learnを利用していますが、環境を手元で作ってもらう�
 
 ```conf
 [plugin.checks.anomaly_sample]
-command = "/usr/local/bin/docker run --rm -e MACKEREL_APIKEY=XXXXX -v /tmp:/tmp yasuhisa/mackerel_ts_anomaly_detection /app/run.sh HOST_ID METRIC_NAME"
+command = "/usr/local/bin/docker run --rm -e MACKEREL_APIKEY=XXXXX -v /tmp:/tmp yasuhisa/mackerel_ts_anomaly_detection /app/run.sh --host-id HOST_ID --metric-name METRIC_NAME"
 max_check_attempts = 2
 ```
