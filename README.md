@@ -2,8 +2,8 @@
 Mackerelのホストメトリックの異常検知を行なうチェック監視プラグインです。
 
 # 概要
-- 異常検知の代表的なアルゴリズムの一つであるLOF(Local Outlier Factor)を利用しています
-  - 大雑把には「自分の近傍にデータ点が少ないデータほど異常である」というk近傍法的な考え方のアルゴリズムです
+- 異常検知の代表的なアルゴリズムの一つである[LOF(Local Outlier Factor)](https://en.wikipedia.org/wiki/Local_outlier_factor)を利用しています
+  - 大雑把には「自分の近傍にデータ点が少ないデータほど異常である」という[k近傍法](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm)的な考え方のアルゴリズムです
 - ホストメトリックの時系列的な異常検知を行なえます
   - 1次元の時系列データをwindow幅(D)で区切ってD次元ベクトルに変換後、LOFに投げます
   - 取得しているAPIのエンドポイントを変えれば簡単にサービスメトリックに対しても動かせるようになるはず
