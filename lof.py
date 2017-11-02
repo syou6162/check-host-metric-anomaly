@@ -44,17 +44,20 @@ def plot_result(train, test, test_average, window_size = 20, contamination=0.01,
 
 train_filename = sys.argv[1]
 test_filename = sys.argv[2]
-window_size = 5
-n_neighbors = 20
+warning = float(sys.argv[3])
+critical = float(sys.argv[4])
+window_size = int(sys.argv[5])
+n_neighbors = int(sys.argv[6])
 
 train = get_subseq_list(load_data(train_filename), window_size=window_size)
-print(len(train))
 # 学習データは5分粒度なので、テストデータも1分粒度のものを5分の平均に丸める
 test_average = list(map(lambda l: np.mean(l), get_subseq_list(load_data(test_filename), window_size=5)))[::5]
 test = get_subseq_list(test_average, window_size=window_size)
 
-warning_result = plot_result(train, test, test_average, window_size = window_size, contamination = 0.005, n_neighbors = n_neighbors)
-critical_result = plot_result(train, test, test_average, window_size = window_size, contamination = 0.001, n_neighbors = n_neighbors)
+print("NUM_TRAIN: " + str(len(train)))
+
+warning_result = plot_result(train, test, test_average, window_size = window_size, contamination = warning, n_neighbors = n_neighbors)
+critical_result = plot_result(train, test, test_average, window_size = window_size, contamination = critical, n_neighbors = n_neighbors)
 
 if critical_result == -1:
     sys.exit(2)
