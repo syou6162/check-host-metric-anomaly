@@ -48,26 +48,33 @@ def plot_result(train, test, test_average, window_size=20, contamination=0.01, n
     plt.close()
     return result[-1]
 
-train_filename = sys.argv[1]
-test_filename = sys.argv[2]
-warning = float(sys.argv[3])
-critical = float(sys.argv[4])
-window_size = int(sys.argv[5])
-n_neighbors = int(sys.argv[6])
 
-train = get_subseq_list(load_data(train_filename), window_size=window_size)
-# 学習データは5分粒度なので、テストデータも1分粒度のものを5分の平均に丸める
-test_average = list(map(lambda l: np.mean(l), get_subseq_list(load_data(test_filename), window_size=5)))[::5]
-test = get_subseq_list(test_average, window_size=window_size)
+def main(args):
+    train_filename = args[0]
+    test_filename = args[1]
+    warning = float(args[2])
+    critical = float(args[3])
+    window_size = int(args[4])
+    n_neighbors = int(args[5])
 
-print("NUM_TRAIN: " + str(len(train)))
+    train = get_subseq_list(load_data(train_filename), window_size=window_size)
+    # 学習データは5分粒度なので、テストデータも1分粒度のものを5分の平均に丸める
+    test_average = list(map(lambda l: np.mean(l), get_subseq_list(load_data(test_filename), window_size=5)))[::5]
+    test = get_subseq_list(test_average, window_size=window_size)
 
-warning_result = plot_result(train, test, test_average, window_size=window_size, contamination=warning, n_neighbors=n_neighbors)
-critical_result = plot_result(train, test, test_average, window_size=window_size, contamination=critical, n_neighbors=n_neighbors)
+    print("NUM_TRAIN: " + str(len(train)))
 
-if critical_result == -1:
-    sys.exit(2)
-elif warning_result == -1:
-    sys.exit(1)
-else:
-    sys.exit(0)
+    warning_result = plot_result(train, test, test_average,
+                                 window_size=window_size, contamination=warning, n_neighbors=n_neighbors)
+    critical_result = plot_result(train, test, test_average,
+                                  window_size=window_size, contamination=critical, n_neighbors=n_neighbors)
+
+    if critical_result == -1:
+        sys.exit(2)
+    elif warning_result == -1:
+        sys.exit(1)
+    else:
+        sys.exit(0)
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
