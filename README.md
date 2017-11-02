@@ -1,5 +1,5 @@
-# mackerel_ts_anomaly_detection
-check監視を使ってホストメトリックの異常検知を行ないます。
+# check-host-metric-anomaly
+Mackerelのホストメトリックの異常検知を行なうチェック監視プラグインです。
 
 # 概要
 - 異常検知の代表的なアルゴリズムの一つであるLOF(Local Outlier Factor)を利用しています
@@ -10,11 +10,19 @@ check監視を使ってホストメトリックの異常検知を行ないます
 - モニタリング専用のホストで動かすのがオススメです
   - アルゴリズムの学習と異常検知をagentを動かしているホスト内で行なうので、多少負荷がかかります
 
-# Build
+# Install/Build
 scikit-learnを利用していますが、環境を手元で作ってもらう手間を省くためにdockerを経由して動かします。
 
+手元で動かせるDockerイメージをDocker Hubでホストしています。Dockerが手元で動く環境であれば、以下のコマンドで使えるようになります。
+
 ```
-% docker build -t yasuhisa/mackerel_ts_anomaly_detection .
+% docker pull yasuhisa/check-host-metric-anomaly
+```
+
+修正を加えて手元でbuildすることもできます。
+
+```
+% docker build -t yasuhisa/check-host-metric-anomaly .
 ```
 
 # mackerel-agent.confの書き方例
@@ -26,6 +34,6 @@ scikit-learnを利用していますが、環境を手元で作ってもらう�
 
 ```conf
 [plugin.checks.anomaly_sample]
-command = "/usr/local/bin/docker run --rm -e MACKEREL_APIKEY=XXXXX -v /tmp:/tmp yasuhisa/mackerel_ts_anomaly_detection /app/run.sh --host-id HOST_ID --metric-name METRIC_NAME"
+command = "/usr/local/bin/docker run --rm -e MACKEREL_APIKEY=XXXXX -v /tmp:/tmp yasuhisa/check-host-metric-anomaly /app/run.sh --host-id HOST_ID --metric-name METRIC_NAME"
 max_check_attempts = 2
 ```
