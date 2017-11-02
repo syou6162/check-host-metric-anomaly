@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 plt.switch_backend('agg')
 
+
 def load_data(filename):
     data = []
     with open(filename, 'r') as fh:
@@ -12,21 +13,26 @@ def load_data(filename):
             data.append(float(line.strip()))
     return data
 
+
 def _subseq_list(input_list, n):
     return zip(*[input_list[i:] for i in range(n)])
 
-def get_subseq_list(data, window_size = 20):
+
+def get_subseq_list(data, window_size=20):
     return list(map(lambda l: list(l), _subseq_list(data, window_size)))
+
 
 def get_lof(train, n_neighbors=20, contamination=0.01):
     lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination)
     lof.fit(train)
     return lof
  
+
 def get_predict(lof, test):
     return lof._predict(test)
 
-def plot_result(train, test, test_average, window_size = 20, contamination=0.01, n_neighbors=20):
+
+def plot_result(train, test, test_average, window_size=20, contamination=0.01, n_neighbors=20):
     # 学習データから怪しいものを抜く
     # lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=0.01)
     # train = np.delete(np.array(train), np.where(lof.fit_predict(np.array(train)) == -1)[0], axis=0)
@@ -56,8 +62,8 @@ test = get_subseq_list(test_average, window_size=window_size)
 
 print("NUM_TRAIN: " + str(len(train)))
 
-warning_result = plot_result(train, test, test_average, window_size = window_size, contamination = warning, n_neighbors = n_neighbors)
-critical_result = plot_result(train, test, test_average, window_size = window_size, contamination = critical, n_neighbors = n_neighbors)
+warning_result = plot_result(train, test, test_average, window_size=window_size, contamination=warning, n_neighbors=n_neighbors)
+critical_result = plot_result(train, test, test_average, window_size=window_size, contamination=critical, n_neighbors=n_neighbors)
 
 if critical_result == -1:
     sys.exit(2)
