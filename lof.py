@@ -3,23 +3,8 @@ from sklearn.neighbors import LocalOutlierFactor
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from util import load_data, get_subseq_list
 plt.switch_backend('agg')
-
-
-def load_data(filename):
-    data = []
-    with open(filename, 'r') as fh:
-        for line in fh:
-            data.append(float(line.strip()))
-    return data
-
-
-def _subseq_list(input_list, n):
-    return zip(*[input_list[i:] for i in range(n)])
-
-
-def get_subseq_list(data, window_size=20):
-    return list(map(lambda l: list(l), _subseq_list(data, window_size)))
 
 
 def get_lof(train, n_neighbors=20, contamination=0.01):
