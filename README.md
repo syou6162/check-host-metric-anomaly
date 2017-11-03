@@ -13,7 +13,7 @@ Mackerelのホストメトリックの異常検知を行なうチェック監視
 # Install/Build
 scikit-learnを利用していますが、環境を手元で作ってもらう手間を省くためにdockerを経由して動かします。
 
-手元で動かせるDockerイメージをDocker Hubでホストしています。Dockerが手元で動く環境であれば、以下のコマンドで使えるようになります。
+手元で動かせるDockerイメージをDocker Hubで[ホスト](https://hub.docker.com/r/yasuhisa/check-host-metric-anomaly/)しています。Dockerが手元で動く環境であれば、以下のコマンドで使えるようになります。
 
 ```
 % docker pull yasuhisa/check-host-metric-anomaly
