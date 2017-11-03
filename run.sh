@@ -38,6 +38,7 @@ if [ "$METRIC_NAME" = "" ] ; then echo "Need metric_name." >&2 ; exit 3 ; fi
 
 TRAIN_FILENAME="/tmp/train_${HOST_ID}_${METRIC_NAME}.txt"
 TEST_FILENAME="/tmp/test_${HOST_ID}_${METRIC_NAME}.txt"
+MODEL_PREFIX="${HOST_ID}_${METRIC_NAME}"
 
 # 学習用のデータは1時間毎に新しく取得する
 if [ ! -e $TRAIN_FILENAME ] || [ ! $(find $TRAIN_FILENAME -mmin -60) ]; then
@@ -45,8 +46,9 @@ if [ ! -e $TRAIN_FILENAME ] || [ ! $(find $TRAIN_FILENAME -mmin -60) ]; then
   ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "19 days ago" +%s) $(date --date "13 days ago" +%s) > $TRAIN_FILENAME
   ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "13 days ago" +%s) $(date --date "7 days ago" +%s) >> $TRAIN_FILENAME
   ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "7 days ago" +%s) $(date --date "12 hours ago" +%s) >> $TRAIN_FILENAME
+  python train.py $TRAIN_FILENAME $MODEL_PREFIX $WARNING $CRITICAL $WINDOW_SIZE $N_NEIGHBORS
 fi
 
 ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "12 hours ago" +%s) $(date +%s) > $TEST_FILENAME
 
-python lof.py $TRAIN_FILENAME $TEST_FILENAME $WARNING $CRITICAL $WINDOW_SIZE $N_NEIGHBORS
+python test.py $TEST_FILENAME $MODEL_PREFIX $WINDOW_SIZE
