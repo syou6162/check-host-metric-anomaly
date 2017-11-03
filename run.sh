@@ -36,13 +36,17 @@ echo "N_NEIGHBORS: $N_NEIGHBORS"
 if [ "$HOST_ID" = "" ] ; then echo "Need host-id." >&2 ; exit 3 ; fi
 if [ "$METRIC_NAME" = "" ] ; then echo "Need metric_name." >&2 ; exit 3 ; fi
 
-TRAIN_FILENAME="train_${HOST_ID}_${METRIC_NAME}.txt"
-TEST_FILENAME="test_${HOST_ID}_${METRIC_NAME}.txt"
+TRAIN_FILENAME="/tmp/train_${HOST_ID}_${METRIC_NAME}.txt"
+TEST_FILENAME="/tmp/test_${HOST_ID}_${METRIC_NAME}.txt"
 
-# ホストメトリックのapiは最大で2000データポイントのみ返すので、5分粒度だとおよそ6日分が限度。よって、分割してリクエストする
-./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "19 days ago" +%s) $(date --date "13 days ago" +%s) > $TRAIN_FILENAME
-./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "13 days ago" +%s) $(date --date "7 days ago" +%s) >> $TRAIN_FILENAME
-./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "7 days ago" +%s) $(date --date "1 days ago" +%s) >> $TRAIN_FILENAME
+# 学習用のデータは1時間毎に新しく取得する
+if [ ! -e $TRAIN_FILENAME ] || [ ! $(find $TRAIN_FILENAME -mmin -60) ]; then
+  # ホストメトリックのapiは最大で2000データポイントのみ返すので、5分粒度だとおよそ6日分が限度。よって、分割してリクエストする
+  ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "19 days ago" +%s) $(date --date "13 days ago" +%s) > $TRAIN_FILENAME
+  ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "13 days ago" +%s) $(date --date "7 days ago" +%s) >> $TRAIN_FILENAME
+  ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "7 days ago" +%s) $(date --date "1 days ago" +%s) >> $TRAIN_FILENAME
+fi
+
 ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "1 days ago" +%s) $(date +%s) > $TEST_FILENAME
 
 python lof.py $TRAIN_FILENAME $TEST_FILENAME $WARNING $CRITICAL $WINDOW_SIZE $N_NEIGHBORS
