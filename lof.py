@@ -1,17 +1,10 @@
 import sys
-from sklearn.neighbors import LocalOutlierFactor
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from util import load_data, get_subseq_list
 plt.switch_backend('agg')
 
-
-def get_lof(train, n_neighbors=20, contamination=0.01):
-    lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination)
-    lof.fit(train)
-    return lof
- 
 
 def get_predictions(train, test, contamination=0.01, n_neighbors=20):
     # 学習データから怪しいものを抜く
