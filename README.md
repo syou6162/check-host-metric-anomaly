@@ -35,5 +35,5 @@ scikit-learnを利用していますが、環境を手元で作ってもらう�
 ```conf
 [plugin.checks.anomaly_sample]
 command = "/usr/local/bin/docker run --rm -e MACKEREL_APIKEY=XXXXX -v /tmp:/tmp yasuhisa/check-host-metric-anomaly /app/run.sh --host-id HOST_ID --metric-name METRIC_NAME"
-max_check_attempts = 2
+max_check_attempts = 3
 ```
