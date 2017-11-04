@@ -36,9 +36,9 @@ echo "N_NEIGHBORS: $N_NEIGHBORS"
 if [ "$HOST_ID" = "" ] ; then echo "Need host-id." >&2 ; exit 3 ; fi
 if [ "$METRIC_NAME" = "" ] ; then echo "Need metric_name." >&2 ; exit 3 ; fi
 
-TRAIN_FILENAME="/tmp/train_${HOST_ID}_${METRIC_NAME}.txt"
-TEST_FILENAME="/tmp/test_${HOST_ID}_${METRIC_NAME}.txt"
-MODEL_PREFIX="${HOST_ID}_${METRIC_NAME}"
+MODEL_PREFIX="${HOST_ID}_${METRIC_NAME}_${WARNING}_${CRITICAL}_${WINDOW_SIZE}_${N_NEIGHBORS}"
+TRAIN_FILENAME="/tmp/train_${MODEL_PREFIX}.txt"
+TEST_FILENAME="/tmp/test_${MODEL_PREFIX}.txt"
 
 # 学習用のデータは1時間毎に新しく取得する
 if [ ! -e $TRAIN_FILENAME ] || [ ! $(find $TRAIN_FILENAME -mmin -60) ]; then
