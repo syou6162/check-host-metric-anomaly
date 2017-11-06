@@ -29,6 +29,7 @@ scikit-learnを利用していますが、環境を手元で作ってもらう�
 - 学習データや異常検知をする直近のデータ取得のため、MackerelのAPIKEYが必要です
 - HOST_ID(例: `2GyUJSydbQq`)には収集したいホストidを記述してください
 - METRIC_NAME(例: `loadavg5`や`cpu.user.percentage`など)には収集したいメトリック名を記述してください
+  - カスタムメトリックも指定できます
   - ワイルドカード指定は今のところできません
 - `max_check_attempts`はなくてもよいですが、時々タイムアウトでUNKNOWNになってしまうため、付けておいたほうが安心です
 
