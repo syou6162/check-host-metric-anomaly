@@ -42,7 +42,6 @@ TEST_FILENAME="/tmp/test_${MODEL_PREFIX}.txt"
 
 # 学習用のデータは1時間毎に新しく取得する
 if [ ! -e $TRAIN_FILENAME ] || [ ! $(find $TRAIN_FILENAME -mmin -60) ]; then
-  # ホストメトリックのapiは最大で2000データポイントのみ返すので、5分粒度だとおよそ6日分が限度。よって、分割してリクエストする
   ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "19 days ago" +%s) $(date --date "13 days ago" +%s) > $TRAIN_FILENAME
   ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "13 days ago" +%s) $(date --date "7 days ago" +%s) >> $TRAIN_FILENAME
   ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "7 days ago" +%s) $(date --date "12 hours ago" +%s) >> $TRAIN_FILENAME
