@@ -37,3 +37,16 @@ scikit-learnを利用していますが、環境を手元で作ってもらう�
 command = "/usr/local/bin/docker run --rm -e MACKEREL_APIKEY=XXXXX -v /tmp:/tmp yasuhisa/check-host-metric-anomaly /app/run.sh --host-id HOST_ID --metric-name METRIC_NAME"
 max_check_attempts = 3
 ```
+
+たくさんのホストメトリックを監視する場合、`docker run`ではコンテナの起動/停止の負荷が大きくなります。その場合にはagentの起動前に`docker start`しておいて、`docker run`の代わりに`docker exec`を使うのがお勧めです。
+
+```sh
+% docker run -d --name check-host-metric-anomaly -e MACKEREL_APIKEY=XXXXX -v /tmp:/tmp yasuhisa/check-host-metric-anomaly init
+% docker start check-host-metric-anomaly
+```
+
+```conf
+[plugin.checks.anomaly_sample]
+command = "/usr/local/bin/docker exec check-host-metric-anomaly /app/run.sh --host-id HOST_ID --metric-name METRIC_NAME"
+max_check_attempts = 3
+```
