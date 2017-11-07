@@ -26,7 +26,9 @@ while true; do
   esac
 done
 
-echo "HOST_ID: $HOST_ID"
+BASE_URL="https://mackerel.io"
+ORG_NAME=$(curl -s -H "X-Api-Key: ${MACKEREL_APIKEY}" "https://mackerel.io/api/v0/org" | jq -r ".name")
+echo HOST: "${BASE_URL}/orgs/${ORG_NAME}/hosts/${HOST_ID}"
 echo "METRIC_NAME: $METRIC_NAME"
 echo "WARNING: $WARNING"
 echo "CRITICAL: $CRITICAL"
