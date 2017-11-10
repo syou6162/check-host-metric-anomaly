@@ -17,7 +17,8 @@ RUN pip install \
     scipy \
     scikit-learn \
     matplotlib \
-    pandas
+    pandas \
+    mackerel.clienthde
 
 RUN echo "backend      : Agg" > /etc/matplotlibrc
 
