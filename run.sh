@@ -40,13 +40,10 @@ if [ "$METRIC_NAME" = "" ] ; then echo "Need metric_name." >&2 ; exit 3 ; fi
 
 MODEL_PREFIX="${HOST_ID}_${METRIC_NAME}_${WARNING}_${CRITICAL}_${WINDOW_SIZE}_${N_NEIGHBORS}"
 MODEL_FILE_PATH="/tmp/${MODEL_PREFIX}_lof.pkl"
-TEST_FILENAME="/tmp/test_${MODEL_PREFIX}.txt"
 
 # 学習用のデータは1時間毎に新しく取得する
 if [ ! -e $MODEL_FILE_PATH ] || [ ! $(find $MODEL_FILE_PATH -mmin -60) ]; then
   python train.py $HOST_ID $METRIC_NAME $WARNING $CRITICAL $WINDOW_SIZE $N_NEIGHBORS
 fi
 
-./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "12 hours ago" +%s) $(date +%s) > $TEST_FILENAME
-
-python test.py $TEST_FILENAME $MODEL_PREFIX $WINDOW_SIZE
+python test.py $HOST_ID $METRIC_NAME $MODEL_FILE_PATH $WINDOW_SIZE

@@ -1,8 +1,11 @@
+import os
 import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import datetime
 from sklearn.externals import joblib
+from mackerel.clienthde import Client, MackerelClientError
 from util import load_data, get_subseq_list
 plt.switch_backend('agg')
 
@@ -20,17 +23,22 @@ def plot_result(filename, test_average, result, window_size):
     plt.savefig("/tmp/" + filename)
     plt.close()
 
+def get_host_metrics(host_id, metric_name):
+    client = Client(mackerel_api_key=os.environ["MACKEREL_APIKEY"])
+    today = datetime.datetime.today()
+    from_ = today + datetime.timedelta(hours=-12)
+    return [m["value"] for m in client.get_host_metrics(host_id, metric_name, from_.strftime('%s'), today.strftime('%s'))["metrics"]]
 
 def main(args):
-    test_filename = args[0]
-    model_prefix = args[1]
-    window_size = int(args[2])
+    host_id = args[0]
+    metric_name = args[1]
+    model_filename = args[2]
+    window_size = int(args[3])
 
     # 学習データは5分粒度なので、テストデータも1分粒度のものを5分の平均に丸める
-    test_average = list(map(lambda l: np.mean(l), get_subseq_list(load_data(test_filename), window_size=5)))[::5]
+    test_average = list(map(lambda l: np.mean(l), get_subseq_list(get_host_metrics(host_id, metric_name), window_size=5)))[::5]
     test = get_subseq_list(test_average, window_size=window_size)
 
-    model_filename = "/tmp/" + model_prefix + "_lof.pkl"
     try:
         models = joblib.load(model_filename)
     except FileNotFoundError:
