@@ -31,7 +31,11 @@ def main(args):
     test = get_subseq_list(test_average, window_size=window_size)
 
     model_filename = "/tmp/" + model_prefix + "_lof.pkl"
-    models = joblib.load(model_filename)
+    try:
+        models = joblib.load(model_filename)
+    except FileNotFoundError:
+       sys.exit(3)
+
     warning_results = get_predictions(models["warning"], test)
     critical_results = get_predictions(models["critical"], test)
 
