@@ -7,8 +7,7 @@ from util import load_data, get_subseq_list
 plt.switch_backend('agg')
 
 
-def get_predictions(model_filename, test):
-    lof = joblib.load(model_filename)
+def get_predictions(lof, test):
     result = lof._predict(test)
     print(result[-10:])
     return result
@@ -31,8 +30,10 @@ def main(args):
     test_average = list(map(lambda l: np.mean(l), get_subseq_list(load_data(test_filename), window_size=5)))[::5]
     test = get_subseq_list(test_average, window_size=window_size)
 
-    warning_results = get_predictions("/tmp/" + model_prefix + '_warning_lof.pkl', test)
-    critical_results = get_predictions("/tmp/" + model_prefix + '_critical_lof.pkl', test)
+    model_filename = "/tmp/" + model_prefix + "_lof.pkl"
+    models = joblib.load(model_filename)
+    warning_results = get_predictions(models["warning"], test)
+    critical_results = get_predictions(models["critical"], test)
 
     warning_result_filename = "result_warning.png"
     critical_result_filename = "result_critical.png"

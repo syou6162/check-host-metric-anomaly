@@ -39,15 +39,12 @@ if [ "$HOST_ID" = "" ] ; then echo "Need host-id." >&2 ; exit 3 ; fi
 if [ "$METRIC_NAME" = "" ] ; then echo "Need metric_name." >&2 ; exit 3 ; fi
 
 MODEL_PREFIX="${HOST_ID}_${METRIC_NAME}_${WARNING}_${CRITICAL}_${WINDOW_SIZE}_${N_NEIGHBORS}"
-TRAIN_FILENAME="/tmp/train_${MODEL_PREFIX}.txt"
+MODEL_FILE_PATH="/tmp/${MODEL_PREFIX}_lof.pkl"
 TEST_FILENAME="/tmp/test_${MODEL_PREFIX}.txt"
 
 # 学習用のデータは1時間毎に新しく取得する
-if [ ! -e $TRAIN_FILENAME ] || [ ! $(find $TRAIN_FILENAME -mmin -60) ]; then
-  ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "19 days ago" +%s) $(date --date "13 days ago" +%s) > $TRAIN_FILENAME
-  ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "13 days ago" +%s) $(date --date "7 days ago" +%s) >> $TRAIN_FILENAME
-  ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "7 days ago" +%s) $(date --date "12 hours ago" +%s) >> $TRAIN_FILENAME
-  python train.py $TRAIN_FILENAME $MODEL_PREFIX $WARNING $CRITICAL $WINDOW_SIZE $N_NEIGHBORS
+if [ ! -e $MODEL_FILE_PATH ] || [ ! $(find $MODEL_FILE_PATH -mmin -60) ]; then
+  python train.py $HOST_ID $METRIC_NAME $WARNING $CRITICAL $WINDOW_SIZE $N_NEIGHBORS
 fi
 
 ./get_metrics.sh $HOST_ID $METRIC_NAME $(date --date "12 hours ago" +%s) $(date +%s) > $TEST_FILENAME
